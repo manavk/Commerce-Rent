@@ -1,0 +1,13 @@
+name = Commerce Rent
+description = Commerce Rent module which provides the rent item to the end users.
+core = 7.x
+package = Commerce Rent
+version = 7.x-1.0
+
+files[] = commerce_rent.module
+files[] = include/commerce_rent.inc
+files[] = include/commerce_rent_config.inc
+files[] = include/commerce_rent_manage.inc
+files[] = include/commerce_rent_update.inc
+files[] = include/commerce_rent_button.inc
+
