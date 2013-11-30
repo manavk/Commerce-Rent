@@ -1,213 +1,486 @@
 <?php
+
 /**
-* Implementation of hook_perm().
-*/
-function commerce_rent_permission()
-{
-	$permissions = array();
-	
-	//Define permission for add to rent item for admin site.
-  $permissions['add commerce rent item'] = array(
-    'title' => t('Add Rent Commerce Item'),
-    'description' => t('Perform administrative rights to Add Commerce Rent Item.'),
-  );
-	
-	//Define permission for add to rent button for end user.
-	$permissions['add to rent'] = array(
-    'title' => t('Rent Button'),
-    'description' => t('Perform user access rights for Rent Button.'),
-  );
-	
-	//Define permission for configuration setting to end user.
-	$permissions['commerce rent configuration'] = array(
-    'title' => t('Commerce Rent User Configuration'),
-    'description' => t('Perform administrative rights to Commerce Rent User Configuration. Which is used to define no of eligible item to user roles.'),
-  );
-	
-	//Define permission for manage end user request.
-	$permissions['manage commerce rent item'] = array(
-    'title' => t('Manage Commerce Rent Item'),
-    'description' => t('Perform administrative rights to Manage User Request.'),
-  );
-	
-	//Define permission for Rent link at admin side.
-	$permissions['administer commerce rent'] = array(
-    'title' => t('Administer Commerce Rent'),
-    'description' => t('Perform administrative rights to Commerce Rent main link. "Commerce Rent" is a main link if this link will appear than all other link will appear under this link.'),
-	);
-	
-	//Define permission for Pick request list at admin side.
-	$permissions['commerce rent pickup'] = array(
-    'title' => t('Commerce Rent Pickup'),
-    'description' => t('Perform administrative rights to Pickup, Proceed Pickup Request List.'),
-  );
-	
-	//Define permission for rent tab at admin side.
-	$permissions['bookshelf-tab'] = array(
-    'title' => t('Bookshelf- Tab'),
-    'description' => t('Given user rights for "Bookshelf tab" to the end user.'),
-  );
-	
-	//Define permission for update item at admin side.
-	$permissions['commercerent item update'] = array(
-    'title' => t('Commerce Rent Update Item'),
-    'description' => t('Perform administrative rights to Update Commerce Rent. which will return back from the end user.'),
-  );
-	
-	//Define permission for add to wishlist item tab at end user side.
-	$permissions['add to wishlist item-tab'] = array(
-    'title' => t('Add To Wishlist Item- Tab'),
-    'description' => t('Perform administration and user rights for "Commerce Rent Add to wishlist". "Library Wishlist" tab will show only those user who have access rights for this.'),
-  );
-	
-	//Define permission for add to wishlist button at end user side.
-	$permissions['add to library wishlist'] = array(
-    'title' => t('Add to Library Wishlist Button'),
-    'description' => t('Perform administration and user rights for "Add to Library wishlist" button. "Library Wishlist" button will show only those user who have access rights for this.'),
-  );
-	
-	//Define permission for add to wishlist button at end user side.
-	$permissions['commerce rent Pdf file generation'] = array(
-    'title' => t('Rent PDF File Genrator'),
-    'description' => t('Define administration rights for commerce rent docfile module. Which is used to show list of those user who have requested for the Book Rent and also show PDF link for those user.'),
-  );
-	
-	//Define permission for history tab at end user side.
-	$permissions['commerce rent item history'] = array(
-    'title' => t('Rent Commerce Item History'),
-    'description' => t('Perform administration rights for commerce rent history module.'),
+ * @file
+ * Implements the basic functionality required to create and display an entity.
+ *
+ * This example does not use the
+ * @link http://drupal.org/project/entity Entity API module @endlink, which is
+ * used by many entity implementations and is recommended by many.
+ *
+ * An example of use of creating and managing entities using the Entity API
+ * module is provided in the
+ * @link http://drupal.org/project/model Model Entity module @endlink.
+ *
+ * @todo: Reference the ronald_istos article series
+ * @todo: Reference the Drupal module development book
+ * @todo: Add a single field
+ */
+
+/**
+ * @defgroup entity_example Example: Entity
+ * @ingroup examples
+ * @{
+ * Example creating a core Entity API entity.
+ *
+ * Note that this example does not use or demonstrate the contrib Entity API,
+ * which you can find here: http://drupal.org/project/entity
+ */
+
+/**
+ * Implements hook_entity_info().
+ *
+ * This is the fundamental description of the entity.
+ *
+ * It provides a single entity with a single bundle and without revision
+ * support.
+ */
+function commerce_rent_entity_info() {
+  $info['commerce_rent'] = array(
+    // A human readable label to identify our entity.
+    'label' => t('Commerce Rent'),
+
+    // The controller for our Entity, extending the Drupal core controller.
+    'controller class' => 'EntityCommerceRentController',
+
+    // The table for this entity defined in hook_schema()
+    'base table' => 'commerce_rent',
+
+    // Returns the uri elements of an entity
+    'uri callback' => 'commerce_rent_uri',
+
+    // IF fieldable == FALSE, we can't attach fields.
+    'fieldable' => TRUE,
+
+    // entity_keys tells the controller what database fields are used for key
+    // functions. It is not required if we don't have bundles or revisions.
+    // Here we do not support a revision, so that entity key is omitted.
+    'entity keys' => array(
+      'id' => 'rent_id' , // The 'id' (basic_id here) is the unique id.
+      'bundle' => 'bundle_type' // Bundle will be determined by the 'bundle_type' field
+    ),
+    'bundle keys' => array(
+      'bundle' => 'bundle_type',
+    ),
+
+    // FALSE disables caching. Caching functionality is handled by Drupal core.
+    'static cache' => TRUE,
+
+    // Bundles are alternative groups of fields or configuration
+    // associated with a base entity type.
+    'bundles' => array(
+      'commerce_rent_bundle' => array(
+        'label' => 'Commerce Rent bundle',
+        // 'admin' key is used by the Field UI to provide field and
+        // display UI pages.
+        'admin' => array(
+          'path' => 'admin/rent/commerce-rent/manage',
+          'access arguments' => array('administer commerce rent entities'),
+        ),
+      ),
+    ),
+    // View modes allow entities to be displayed differently based on context.
+    // As a demonstration we'll support "Tweaky", but we could have and support
+    // multiple display modes.
+    'view modes' => array(
+      'tweaky' => array(
+        'label' => t('Tweaky'),
+        'custom settings' =>  FALSE,
+      ),
+    )
   );
 
-	//Define permission for Library wishlist at end user side.
-	$permissions['library wishlist list'] = array(
-    'title' => t('Library Wishlist List'),
-    'description' => t('Perform administration tasks for commerce rent library wishlist module. This will show the list of those items which is request most for Rent.'),
-  );
-	
- return $permissions;
-}
-
-//Add "Rent" button to node
-function commerce_rent_node_view($node, $view_mode, $langcode)
-{
-	if(user_access('add to rent'))
-	{
-		module_load_include('inc', 'commerce_rent', 'include/commerce_rent_button');
-		
-		//Get product id
-		$product_id = $node->field_book_reference[LANGUAGE_NONE][0]['product_id'];
-		
-		//Get product details
-		$product = commerce_product_load($product_id);
-		
-		//Save sku of the product in a variable
-		$sku = $product->sku;
-		
-		//check status of the product in rent table
-		$product_status = _product_status($sku);
-		
-		if($product_status == 1)
-		{
-			$role_rentproduct = rent_button_block_form($sku, $node->nid);
-		
-			if ($node->type=="book_display")
-			{
-				$node->content['rent_content'] = array(
-				"#markup"=> $role_rentproduct,
-				"#weight"=> 100
-				);
-			}
-			return $node;
-		}
-	}
+  return $info;
 }
 
 /**
-* Implementation of hook_menu
-*/
-function commerce_rent_menu()
-{
-  $items = array();
-  $items['admin/commerce/rent'] = array(
-      'title' => t('COMMERCE RENT'),
-			'type' => MENU_NORMAL_ITEM,
-      'access callback' => 'user_access',
-			'access arguments' => array('administer commerce rent'),
+ * Fetch a basic object.
+ *
+ * This function ends up being a shim between the menu system and
+ * entity_example_basic_load_multiple().
+ *
+ * This function gets its name from the menu system's wildcard
+ * naming conventions. For example, /path/%wildcard would end
+ * up calling wildcard_load(%wildcard value). In our case defining
+ * the path: examples/entity_example/basic/%entity_example_basic in
+ * hook_menu() tells Drupal to call entity_example_basic_load().
+ *
+ * @param $basic_id
+ *   Integer specifying the basic entity id.
+ * @param $reset
+ *   A boolean indicating that the internal cache should be reset.
+ * @return
+ *   A fully-loaded $basic object or FALSE if it cannot be loaded.
+ *
+ * @see entity_example_basic_load_multiple()
+ * @see entity_example_menu()
+ */
+function commerce_rent_load($basic_id = NULL, $reset = FALSE) {
+  $basic_ids = (isset($basic_id) ? array($basic_id) : array());
+  $basic = commerce_rent_load_multiple($basic_ids, array(), $reset);
+  return $basic ? reset($basic) : FALSE;
+}
+
+/**
+ * Loads multiple basic entities.
+ *
+ * We only need to pass this request along to entity_load(), which
+ * will in turn call the load() method of our entity controller class.
+ */
+function commerce_rent_load_multiple($basic_ids = FALSE, $conditions = array(), $reset = FALSE) {
+  return entity_load('entity_example_basic', $basic_ids, $conditions, $reset);
+}
+
+/**
+ * Implements the uri callback.
+ */
+function commerce_rent_uri($basic) {
+  return array(
+    'path' => 'rent/commerce-rent/' . $basic->basic_id,
   );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_rent_menu() {
+	$items = array();
+
+  // This provides a place for Field API to hang its own
+  // interface and has to be the same as what was defined
+  // in basic_entity_info() above.
   
-	$items['admin/commerce/rent/items'] = array(
-      'title' => t('ITEM'),
-			'type' => MENU_NORMAL_ITEM,
-      'access arguments' => array('add commerce rent item'),
-      'access callback' => 'user_access',
+  $items['admin/rent/commerce-rent/manage'] = array(
+    'title' => 'Rent Type',
+    'page callback' => 'commerce_rent_list_entities',
+    'access arguments' => array('administer commerce rent entities'),
+		'type' => MENU_NORMAL_ITEM,
   );
-	
-	$items['admin/commerce/rent/items/add'] = array(
-      'title' => t('ADD ITEM'),
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('commerce_rent_form'),
-      'access arguments' => array('add commerce rent item'),
-      'access callback' => 'user_access',
-      'file_path' => drupal_get_path('module', 'commerce_rent'),
-      'file' => 'include/commerce_rent.inc',
+  // Add example entities.
+  $items['admin/rent/commerce-rent/manage/add'] = array(
+    'title' => 'Add rent type',
+    'page callback' => 'commerce_rent_add',
+    'access arguments' => array('create commerce rent entities'),
+    'type' => MENU_NORMAL_ITEM,
   );
-	
-	$items['admin/commerce/rent/items/edit'] = array(
-      'title' => t('EDIT ITEM'),
-      'page callback' => '_commerce_rent_item_edit_list',
-      'access arguments' => array('add commerce rent item'),
-      'access callback' => 'user_access',
-      'file_path' => drupal_get_path('module', 'commerce_rent'),
-      'file' => 'include/commerce_rent_item_edit.inc',
+
+  // List of all commerce_rent entities.
+  $items['admin/rent/commerce-rent/manage/list'] = array(
+    'title' => 'List',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
   );
-	
-	$items['admin/commerce/rent/items/edit/%'] = array(
-      'title' => t('EDIT ITEM'),
-      'page callback' => 'drupal_get_form',
-      'page arguments' => array('commerce_rent_item_edit_item_form'),
-      'access arguments' => array('add commerce rent item'),
-      'access callback' => 'user_access',
-      'file_path' => drupal_get_path('module', 'commerce_rent'),
-      'file' => 'include/commerce_rent_item_edit.inc',
+
+  // The page to view our entities - needs to follow what
+  // is defined in basic_uri and will use load_basic to retrieve
+  // the necessary entity info.
+  $items['rent/commerce-rent/%commerce_rent'] = array(
+    'title callback' => 'commerce_rent_title',
+    'title arguments' => array(2),
+    'page callback' => 'commerce_rent_view',
+    'page arguments' => array(2),
+    'access arguments' => array('view any commerce rent entity'),
   );
-	
-	$items['admin/commerce/rent/rent_config'] = array(
-    'title' => t('CONFIGURATION'),
-    'page callback' => 'rent_config_form',
-    'access callback' => 'user_access',
-    'access arguments' => array('commerce rent configuration'),
-    'file_path' => drupal_get_path('module', 'commerce_rent'),
-    'file' => 'include/commerce_rent_config.inc',
+
+  // 'View' tab for an individual entity page.
+  $items['rent/commerce-rent/%commerce_rent/view'] = array(
+    'title' => 'View',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
   );
-	
-	$items['admin/commerce/rent/request_manage'] = array(
-    'title' => t('MANAGE REQUEST'),
+
+  // 'Edit' tab for an individual entity page.
+  $items['rent/commerce-rent/%commerce_rent/edit'] = array(
+    'title' => 'Edit',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('rent_manage_form'),
-    'access arguments' => array('manage commerce rent item'),
-    'access callback' => 'user_access',
-    'file_path' => drupal_get_path('module', 'commerce_rent'),
-    'file' => 'include/commerce_rent_manage.inc',
+    'page arguments' => array('commerce_rent_form', 3),
+    'access arguments' => array('edit any commerce rent entity'),
+    'type' => MENU_LOCAL_TASK,
   );
-	
-	$items['admin/commerce/rent/request_manage/%/%'] = array(
-    'title' => t('MANAGE REQUEST'),
-    'page callback' => 'request_close_form',
-    'page arguments' => array(4, 5),
-    'access callback' => 'user_access',
-    'access arguments' => array('manage commerce rent item'),
-    'file_path' => drupal_get_path('module', 'commerce_rent'),
-    'file' => 'include/commerce_rent_manage.inc',
+
+  // Add example entities.
+  $items['rent/commerce-rent/commerce_rent/add'] = array(
+    'title' => 'Add an commerce rent Entity',
+    'page callback' => 'commerce_rent_add',
+    'access arguments' => array('create commerce rent entities'),
   );
-	
-	$items['rent/rent_button_link'] = array(
-    'title' => t('RENT LINK'),
-    'page callback' => '_rent_button_link_fuctionality',
-    'page arguments' => array(2,3),
-    'access callback' => TRUE,
-    'access arguments' => array('access content'),
-    'file_path' => drupal_get_path('module', 'commerce_rent'),
-    'file' => 'include/commerce_rent_button.inc',
+
+  return $items;
+}
+
+/**
+ * Basic information for the page.
+ */
+function commerce_rent_info_page() {
+  $content['preface'] = array(
+    '#type' => 'item',
+    '#markup' => t('The entity example provides a simple example entity.')
   );
-	return $items;
+  if (user_access('administer commerce rent entities')) {
+    $content['preface']['#markup'] =  t('You can administer these and add fields and change the view !link.',
+      array('!link' => l(t('here'), 'admin/rent/commerce-rent/manage'))
+    );
+  }
+  $content['table'] = commerce_rent_list_entities();
+
+  return $content;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function commerce_rent_permission() {
+  $permissions = array(
+    'administer commerce rent entities' =>  array(
+      'title' => t('Administer commerce rent entities'),
+    ),
+    'view any commerce rent entity' => array(
+      'title' => t('View any commerce rent entity'),
+    ),
+    'edit any commerce rent entity' => array(
+      'title' => t('Edit any commerce rent entity'),
+    ),
+    'create commerce rent entities' => array(
+      'title' => t('Create commerce rent Entities'),
+    ),
+  );
+  return $permissions;
+}
+
+/**
+ * Returns a render array with all entity_example_basic entities.
+ *
+ * In this basic example we know that there won't be many entities,
+ * so we'll just load them all for display. See pager_example.module
+ * to implement a pager. Most implementations would probably do this
+ * with the contrib Entity API module, or a view using views module,
+ * but we avoid using non-core features in the Examples project.
+ *
+ * @see pager_example.module
+ */
+function commerce_rent_list_entities() {
+  $content = array();
+  // Load all of our entities.
+  $entities = commerce_rent_load_multiple();
+  if (!empty($entities)) {
+    foreach ( $entities as $entity ) {
+      // Create tabular rows for our entities.
+      $rows[] = array(
+        'data' => array(
+          'id' => $entity->basic_id,
+          'item_description' => l($entity->item_description, 'rent/commerce-rent/' . $entity->basic_id),
+          'bundle' => $entity->bundle_type,
+        ),
+      );
+    }
+    // Put our entities into a themed table. See theme_table() for details.
+    $content['commerce_rent'] = array(
+      '#theme' => 'table',
+      '#rows' => $rows,
+      '#header' => array(t('ID'), t('Item Description'), t('Bundle')),
+    );
+  }
+  else {
+    // There were no entities. Tell the user.
+    $content[] = array(
+      '#type' => 'item',
+      '#markup' => t('No commerce rent entities currently exist.'),
+    );
+  }
+  return $content;
+}
+
+/**
+ * Callback for a page title when this entity is displayed.
+ */
+function commerce_rent_title($entity) {
+  return t('Entity Commerce Rent (item_description=@item_description)', array('@item_description' => $entity->item_description));
+}
+
+/**
+ * Menu callback to display an entity.
+ *
+ * As we load the entity for display, we're responsible for invoking a number
+ * of hooks in their proper order.
+ *
+ * @see hook_entity_prepare_view()
+ * @see hook_entity_view()
+ * @see hook_entity_view_alter()
+ */
+function commerce_rent_view($entity, $view_mode = 'tweaky') {
+  // Our entity type, for convenience.
+  $entity_type = 'commerce_rent';
+  // Start setting up the content.
+  $entity->content = array(
+    '#view_mode' => $view_mode,
+  );
+  // Build fields content - this is where the Field API really comes in to play.
+  // The task has very little code here because it all gets taken care of by
+  // field module.
+  // field_attach_prepare_view() lets the fields load any data they need
+  // before viewing.
+  field_attach_prepare_view($entity_type, array($entity->rent_id => $entity),
+    $view_mode);
+  // We call entity_prepare_view() so it can invoke hook_entity_prepare_view()
+  // for us.
+  entity_prepare_view($entity_type, array($entity->rent_id => $entity));
+  // Now field_attach_view() generates the content for the fields.
+  $entity->content += field_attach_view($entity_type, $entity, $view_mode);
+
+  // OK, Field API done, now we can set up some of our own data.
+  $entity->content['created'] = array(
+    '#type' => 'item',
+    '#title' => t('Created date'),
+    '#markup' => format_date($entity->created),
+  );
+  $entity->content['item_description'] = array(
+    '#type' => 'item',
+    '#title' => t('Item Description'),
+    '#markup' => $entity->item_description,
+  );
+
+  // Now to invoke some hooks. We need the language code for
+  // hook_entity_view(), so let's get that.
+  global $language;
+  $langcode = $language->language;
+  // And now invoke hook_entity_view().
+  module_invoke_all('entity_view', $entity, $entity_type, $view_mode,
+    $langcode);
+  // Now invoke hook_entity_view_alter().
+  drupal_alter(array('commerce_rent_view', 'entity_view'),
+    $entity->content, $entity_type);
+
+  // And finally return the content.
+  return $entity->content;
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ *
+ * This exposes the "extra fields" (usually properties that can be configured
+ * as if they were fields) of the entity as pseudo-fields
+ * so that they get handled by the Entity and Field core functionality.
+ * Node titles get treated in a similar manner.
+ */
+function commerce_rent_extra_fields() {
+  $form_elements['item_description'] = array(
+    'label' => t('Item Description'),
+    'description' => t('Item Description (an extra form field)'),
+    'weight' => -5,
+  );
+  $display_elements['created'] = array(
+    'label' => t('Creation date'),
+    'description' => t('Creation date (an extra display field)'),
+    'weight' => 0,
+  );
+  $display_elements['item_description'] = array(
+    'label' => t('Item Description'),
+    'description' => t('Just like title, but trying to point out that it is a separate property'),
+    'weight' => 0,
+  );
+
+  // Since we have only one bundle type, we'll just provide the extra_fields
+  // for it here.
+  $extra_fields['entity_example_basic']['first_example_bundle']['form'] = $form_elements;
+  $extra_fields['entity_example_basic']['first_example_bundle']['display'] = $display_elements;
+
+  return $extra_fields;
+}
+
+/**
+ * Provides a wrapper on the edit form to add a new entity.
+ */
+function commerce_rent_add() {
+  // Create a basic entity structure to be used and passed to the validation
+  // and submission functions.
+  $entity = entity_get_controller('commerce_rent')->create();
+  return drupal_get_form('commerce_rent_form', $entity);
+}
+
+/**
+ * Form function to create an entity_example_basic entity.
+ *
+ * The pattern is:
+ * - Set up the form for the data that is specific to your
+ *   entity: the columns of your base table.
+ * - Call on the Field API to pull in the form elements
+ *   for fields attached to the entity.
+ */
+function commerce_rent_form($form, &$form_state, $entity) {
+  $form['item_description'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Item Description'),
+    '#required' => TRUE,
+    '#default_value' => $entity->item_description,
+  );
+
+  $form['basic_entity'] = array(
+    '#type' => 'value',
+    '#value' => $entity,
+  );
+
+  field_attach_form('commerce_rent', $entity, $form, $form_state);
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#weight' => 100,
+  );
+  $form['delete'] = array(
+    '#type' => 'submit',
+    '#value' => t('Delete'),
+    '#submit' => array('commerce_rent_edit_delete'),
+    '#weight' => 200,
+  );
+
+  return $form;
+}
+
+
+/**
+ * Validation handler for entity_example_basic_add_form form.
+ * We pass things straight through to the Field API to handle validation
+ * of the attached fields.
+ */
+function commerce_rent_form_validate($form, &$form_state) {
+  field_attach_form_validate('commerce_rent', $form_state['values']['basic_entity'], $form, $form_state);
+}
+
+
+/**
+ * Form submit handler: submits basic_add_form information
+ */
+function commerce_rent_form_submit($form, &$form_state) {
+  $entity = $form_state['values']['basic_entity'];
+  $entity->item_description = $form_state['values']['item_description'];
+  field_attach_submit('commerce_rent', $entity, $form, $form_state);
+  $entity = entity_example_basic_save($entity);
+  $form_state['redirect'] = 'rent/commerce-rent/' . $entity->basic_id;
+}
+
+/**
+ * Form deletion handler.
+ *
+ * @todo: 'Are you sure?' message.
+ */
+function commerce_rent_edit_delete( $form , &$form_state ) {
+  $entity = $form_state['values']['basic_entity'];
+  entity_example_basic_delete($entity);
+  drupal_set_message(t('The entity %item_description (ID %id) has been deleted',
+    array('%item_description' => $entity->item_description, '%id' => $entity->basic_id))
+  );
+  $form_state['redirect'] = 'rent/commerce-rent';
+}
+
+/**
+ * We save the entity by calling the controller.
+ */
+function commerce_rent_save(&$entity) {
+  return entity_get_controller('commerce_rent')->save($entity);
+}
+
+/**
+ * Use the controller to delete the entity.
+ */
+function commerce_rent_delete($entity) {
+  entity_get_controller('commerce_rent')->delete($entity);
 }

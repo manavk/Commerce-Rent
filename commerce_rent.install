@@ -1,518 +1,71 @@
 <?php
 /**
-* Implements hook_schema()
-*/
+ * @file
+ * Install for a basic entity - need to create the base table for our entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * The minimum information for the entity to work is an id and an entity name.
+ */
 
-//function which will assign commerce_rent schema in the database.
-function commerce_rent_schema()
-{
-$schema['commerce_rent'] = array(
-  'description' => 'TODO: commerce rent master table for rent system!',
-  'fields' => array(
-    
-			//serial no for the table item
-			'commerce_rent_sno' => array(
-				'description' => 'Auto incremented Sno and Primary Key for commerce_rent table',
-				'type' => 'serial',
-				'unsigned' => TRUE,
-				'not null' => TRUE,
-			),
-				
-			//serial no for the table item
-			'commerce_rent_item_sno' => array(
-				'description' => 'Item auto genterated Sno.',
-				'type' => 'varchar',
-				'length' => 256,
-				'not null' => FALSE,
-			),
-			
-			//serial no for the table item
-			'product_id' => array(
-				'description' => 'Product id of the book item',
-				'type' => 'int',
-				'length' => 20,
-				'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'sku' => array(
-			'description' => 'stock keeping unit of book SKU',
-			'type' => 'varchar',
-			'length' => 200,
-			'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'field_book_author_value' => array(
-				'description' => 'Author name of the book',
-				'type' => 'varchar',
-				'length' => 255,
-				'not null' => FALSE,
-			),
-			
-			//serial no for the table item
-			'title' => array(
-				'description' => 'Name of the book or title',
-				'type' => 'varchar',
-				'length' => 255,
-				'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'commerce_rent_item_location' => array(
-				'description' => 'This field shows the location or rack no of the book',
-				'type' => 'varchar',
-				'length' => 255,
-				'not null' => FALSE,
-			),
-			
-			//serial no for the table item
-			'commerce_rent_item_procurment_source' => array(
-				'description' => 'The source where indiaread buys the books',
-				'type' => 'varchar',
-				'length' => 200,
-				'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'commerce_rent_item_procurment_price' => array(
-				'description' => 'Price of the book on which indiaread buys it.',
-				'type' => 'float',
-				'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'commerce_rent_item_condition' => array(
-				'description' => 'Condition of the book new or old',
-				'type' => 'varchar',
-				'length' => 200,
-				'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'filename' => array(
-				'description' => 'Image path of the book or directory path where the image resides.',
-				'type' => 'varchar',
-				'length' => 300,
-				'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'field_isbn1book_3_value' => array(
-				'description' => 'isbn',
-				'type' => 'int',
-				'size' => 'big',
-				'not null' => FALSE,
-			),
-				
-			//serial no for the table item
-			'commerce_rent_item_availability' => array(
-				'description' => 'status of the book. available or not for renting(In, Out, Lost).',
-				'type' => 'varchar',
-				'length' => 32,
-				'not null' => TRUE,
-				'default' => 'IN',
-			),
-		),
-			
-		'primary key' => array('commerce_rent_sno'),
-);
+/**
+ * Implements hook_schema().
+ *
+ * @ingroup entity_example
+ */
+function commerce_rent_schema() {
+  $schema = array();
 
-
-	$schema['commerce_rent_user_setting'] = array(
-    'description' => 'TODO: please describe this table!',
-    'fields' => array(
-      
-				//serial no for the table item
-				'commerce_rent_item_sno' => array(
-					'description' => 'Primary Key',
-					'type' => 'serial',
-					'not null' => TRUE,
-					'unsigned' => TRUE,
-        ),
-      
-				//user role id which is in the role table.
-				'rid' => array(
-					'description' => 'User id who apply for the rent item',
-					'type' => 'int',
-					'length' => '20',
-					'not null' => FALSE,
-        ),
-      
-				//user name according to user role id.
-				'name' => array(
-					'description' => 'User name according to user rid',
-					'type' => 'varchar',
-					'length' => '64',
-					'not null' => FALSE,
-					'default' => '',
-        ),
-	
-				//min value of the book rent item for role user.
-				'commerce_rent_user_min' => array(
-					'description' => 'User id who apply for the rent item',
-					'type' => 'int',
-					'length' => '20',
-					'not null' => FALSE,
-        ),
-        
-				//max value of the book rent item for role user.
-				'commerce_rent_user_max' => array(
-					'description' => 'E-mail id of the user who apply for the rent item',
-					'type' => 'int',
-					'length' => '20',
-					'not null' => FALSE,
-        ),
-	
-        //User eligibility: at a time how many min book will sent to the role user.
-        'commerce_rent_user_eligible' => array(//User role id 
-          'description' => 'User role id who apply for the rent item',
-          'type' => 'int',
-          'length' => '10',
-          'not null' => FALSE,
-        ),
-      ),
-        
-      //Assign primary key to the table column.
-      'primary key' => array('commerce_rent_item_sno'),
-  );
-
-$schema['commerce_rent_shipping_details'] = array(
-    'description' => 'Commerce rent shipping details table!.',
-    'fields' => array(
-
-      //Sno no for the table(Primary key).
-      'commerce_rent_shipping_sno' => array(
-        'description' => 'SNo for the table entry(Primary key).',
-        'type' => 'serial',
-        'not null' => TRUE,
-        'unsigned' => TRUE,
-      ),
-			
-			
-      //define commerce request sno field which is used to store the user request sno in the database.
-      'commerce_rent_request_sno' => array(
-        'description' => 'Commerce rent request sno of the user.',
-        'type' => 'varchar',
-        'length' => '20',
-        'not null' => FALSE,
-      ),
-			
-      //define company name field which is used to store the company name in the database.
-      'commerce_rent_shipping_company_name' => array(
-        'description' => 'Shipping company name which deliver the item to the user.',
-        'type' => 'varchar',
-        'length' => '200',
-        'not null' => FALSE,
-      ),
-      
-      //define user id who applied for the rent. 
-      'commerce_rent_shipping_user_uid' => array(
-        'description' => 'User id of the end user who applied for the rent.',
-        'type' => 'int',
-        'length' => '11',
-        'not null' => FALSE,
-      ),
-	
-      //define unique SNo for the rent item.
-      'commerce_rent_shipping_item_sno' => array(
-        'description' => 'Unique SNo of the rent item.',
-        'type' => 'varchar',
-        'length' => '256',
-        'not null' => FALSE,
-      ),
-	
-      //Time at which the request will be close.
-      'commerce_rent_shipping_request_close_time' => array(
-        'description' => 'Time when the request will be close by the administrator.',
-        'type' => 'datetime',
-				'mysql_type' => 'DATETIME',
-				'sortable' => TRUE,
-				'views' => TRUE,
-      ),
-        
-      //Unique shipment no for the shipping item.
-      'commerce_rent_shipping_shipment_no' => array(
-        'description' => 'Unique shipment no for the item which is provided by the shipping company name.',
-        'type' => 'varchar',
-        'length' => '256',
-        'not null' => TRUE,
-        'default' => '0',
-      ),
-
-      //Tracking id of the shipping item.
-			'commerce_rent_shipping_tracking_id' => array(
-        'description' => 'Tracking id of the shipping item.',
-        'type' => 'varchar',
-        'length' => '256',
-        'not null' => FALSE,
-        'default' => '0',
-      ),
-       
-			//Tracking URL for the shipping item.
-			'commerce_rent_shipping_tracking_url' => array(
-        'description' => 'Tracking URL of the shipping item.',
-        'type' => 'text',
-        'not null' => FALSE,
-      ),
-
-			//Weight of the shipping item.
-			'commerce_rent_shipping_weight' => array(
-        'description' => 'Weight of the shipping item.',
-        'type' => 'float',
-        'not null' => FALSE,
-        'default' => '0',
-      ),
-        
-			//Dimension of the shipping item.
-			'commerce_rent_shipping_item_dimension' => array(
-				'description' => 'Dimension of the shipping item.',
-				'type' => 'varchar',
-				'length' => '256',
-				'not null' => FALSE,
-				'default' => '0',
-      ),
-
-			//Status of the shipping item.
-			'commerce_rent_item_status' => array(
-				'description' => 'Status of the item which is requested for the rent(IN, OUT, LOST)',
-				'type' => 'char',
-				'length' => '20',
-				'not null' => FALSE,
-				'default' => 'OUT',
-      ),
-    ),
-     
-    'primary key' => array('commerce_rent_shipping_sno'),
-  );
-
-  $schema['commerce_rent_request'] = array(
-    'description' => 'Commerce rent request table!',
+  // The name of the table can be any name we choose. However, namespacing the
+  // table with the module name is best practice.
+  $schema['commerce_rent'] = array(
+    'description' => 'The base table for our basic entity.',
       'fields' => array(
-				'commerce_rent_request_sno' => array(
-					'description' => 'sno of the table entry(Primary key)',
-					'type' => 'serial',
-					'not null' => TRUE,
-					'unsigned' => TRUE,
-				),
-				
-				'commerce_rent_request_id' => array(
-					'description' => 'unique request id for each request',
-					'type' => 'varchar',
-					'length' => '20',
-				),
-				
-				'commerce_rent_request_user_uid' => array(
-					'description' => 'user id who request for the book',
-					'type' => 'int',
-					'length' => '20',
-					'not null' => TRUE,
-				),
-				'commerce_rent_user_request_time' => array(
-					'description' => 'time when the user applied for the rent requests',
-					'type' => 'datetime',
-					'mysql_type' => 'DATETIME',
-					'not null' => FALSE,
-					'sortable' => TRUE,
-					'views' => TRUE,
-				),
-				
-				'commerce_rent_user_request_fullfill_time' => array(
-					'description' => 'time when the admin fullfill the requests',
-					'type' => 'datetime',
-					'mysql_type' => 'DATETIME',
-					'not null' => FALSE,
-					'sortable' => TRUE,
-					'views' => TRUE,
-				),
-				
-				'commerce_rent_user_request_close_time' => array(
-					'description' => 'time when the admin close the requests',
-					'type' => 'datetime',
-					'mysql_type' => 'DATETIME',
-					'not null' => FALSE,
-					'sortable' => TRUE,
-					'views' => TRUE,
-				),
-				'commerce_rent_user_request_status' => array(
-					'description' => 'status of the user who request for the rent(Open, IN-P, Close)',
-					'type' => 'char',
-					'length' => '30',
-					'not null' => TRUE,
-					'default' => 'OPEN',
-					),
-				
-				'commerce_rent_request_fullfill_by' => array(
-					'description' => 'user id who full fill the request',
-					'type' => 'int',
-					'length' => '20',
-					),
-				
-				'commerce_rent_request_close_by' => array(
-					'description' => 'user id who close the request',
-					'type' => 'int',
-					'length' => '20',
-					),
-				
-				),
-    'primary key' => array('commerce_rent_request_sno'),
-	);
-  
-  $schema['commerce_rent_item_user_details'] = array(
-	//table name commerce_rent_item
-    'description' => 'TODO: please describe this table!',
-    'fields' => array(
-      'commerce_rent_item_request_id' => array(//serial no of the rent item
-				'description' => 'Primary Key',
-				'type' => 'serial',
-				'unsigned' => TRUE,
-				'not null' => TRUE,
-      ),
-			'commerce_rent_user_uid' => array(//user id in user login table
-				'description' => 'User id who apply for the rent item',
-				'type' => 'int',
-				'length' => '20',
-				'not null' => FALSE,
-      ),
-			'commerce_rent_user_name' => array(//E-mail id of the user
-				'description' => 'E-mail id of the user who apply for the rent item',
-				'type' => 'varchar',
-				'length' => '200',
-				'not null' => FALSE,
-      ),
-			'commerce_rent_user_rid' => array(//User role id 
-				'description' => 'User role id who apply for the rent item',
-				'type' => 'int',
-				'length' => '10',
-				'not null' => FALSE,
-			),
-			'commerce_rent_item_added_time' => array(//time when user click on the rent button
-				'description' => 'time when user request for book',
-				'type' => 'int',
-				'length' => '11',
-				'not null' => FALSE,
-      ),
-			'commerce_rent_close_time' => array(//time when request will be closed
-				'description' => 'request close time',
-				'type' => 'int',
-				'length' => '11',
-      ),
-			'commerce_rent_item_status' => array(//status of the book like open, in-process, position
-				'description' => 'status of the request(Open, In-p, Close)',
-				'type' => 'varchar',
-				'length' => '20',
-				'not null' => FALSE,
-				'default' => 'OPEN',
-			),
-		),
-		'primary key' => array('commerce_rent_item_request_id'),
-	);
-
-  $schema['commerce_rent_item_details'] = array(
-    'description' => 'TODO: please describe this table!',
-    'fields' => array(
-				
-			'commerce_rent_item_sno' => array( //auto generated primary key
-        'description' => 'Primary Key',
-        'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-      ),
-
-      'commerce_rent_item_sku' => array( //Stock keeping unit(sku) no. of the book
-        'description' => 'SKU of the book',
-        'type' => 'int',
-        'size' => 'big',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_rent_sno' => array( //serial no of the book which is in the rent table
-        'description' => 'Serial no of the book which applied for rent',
-        'type' => 'varchar',
-        'length' => '256',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_name' => array( //name of the book or title of the book
-        'description' => 'Name of the book or title',
-        'type' => 'varchar',
-        'length' => '200',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_author' => array( //Author name of the book
-        'description' => 'Author name of the book or title',
-        'type' => 'varchar',
-        'length' => '200',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_image_path' => array( //image path of the book which applied for rent
-        'description' => 'image path of the book',
-        'type' => 'varchar',
-        'length' => '250',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_isbn' => array( //isbn no of the book which applied for rent
-        'description' => 'isbn of the book',
-        'type' => 'varchar',
-        'length' => '255',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_returing_time' => array(//time when request will be closed
-        'description' => 'request close time',
-        'type' => 'int',
-        'length' => '11',
-      ),
-
-      'commerce_rent_item_position' => array(//position of the request
-        'description' => 'postion of the requests item',
-        'type' => 'int',
-        'length' => 'tiny',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_status' => array(//position of the request
-        'description' => 'status of the request(Open, In-p, Close)',
-        'type' => 'char',
-        'length' => '20',
-        'not null' => FALSE,
-        'default' => 'OPEN',
-      ),
-
-      'commerce_rent_item_location' => array(//position of the request
-        'description' => 'postion of the requested item',
-        'type' => 'varchar',
-        'length' => '10',
-        'not null' => FALSE,
-        'default' => '0',
-      ),
-
-      'commerce_rent_item_request_id' => array(
-        'description' => 'postion of the requested item',
-        'type' => 'varchar',
-        'length' => '10',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_request_uid' => array(
-        'description' => 'user id who requested for the rent item',
-        'type' => 'int',
-        'length' => '20',
-        'not null' => FALSE,
-      ),
-
-      'commerce_rent_item_nid' => array(
-        'description' => 'user id who requested for the rent item',
-        'type' => 'int',
-        'length' => '20',
-        'not null' => FALSE,
+        'rent_id' => array(
+          'description' => 'Primary key of the basic entity.',
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        // If we allow multiple bundles, then the schema must handle that;
+        // We'll put it in the 'bundle_type' field to avoid confusion with the
+        // entity type.
+        'bundle_type' => array(
+          'description' => 'The bundle type',
+          'type' => 'text',
+          'size' => 'medium',
+          'not null' => TRUE
+        ),
+        // Additional properties are just things that are common to all
+        // entities and don't require field storage.
+        'item_description' => array(
+          'description' => 'A description of the item',
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+          'default' => '',
+        ),
+        'created' => array(
+          'description' => 'The Unix timestamp of the entity creation time.',
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => 0,
         ),
       ),
-      'primary key' => array('commerce_rent_item_sno'),
-      );
+    'primary key' => array('rent_id'),
+  );
 
-return $schema;
+  return $schema;
+}
+
+
+/*
+ * Implements hook_uninstall().
+ *
+ * At uninstall time we'll notify field.module that the entity was deleted
+ * so that attached fields can be cleaned up.
+ *
+ * @ingroup entity_example
+ */
+function commerce_rent_uninstall() {
+  field_attach_delete_bundle('commerce_rent' , 'first_example_bundle' );
 }

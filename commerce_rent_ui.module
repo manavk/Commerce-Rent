@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * @file
+ * Defines menu items common to the various Drupal Commerce UI modules.
+ */
+
+
+/**
+ * Implements hook_menu().
+ */
+function commerce_rent_ui_menu() {
+  $items = array();
+
+  // Top level "Rent Store" container.
+  $items['admin/rent'] = array(
+    'title' => 'Rent',
+    'description' => 'Administer your rent store.',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file path' => drupal_get_path('module', 'system'),
+    'file' => 'system.admin.inc',
+    'weight' => -7,
+  );
+  
+  //Rent store configuration
+  $items['admin/rent/config'] = array(
+    'title' => 'Configuration',
+    'description' => 'Configure settings and business rules for your rent store.',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+    'weight' => 50,
+    'file path' => drupal_get_path('module', 'system'),
+    'file' => 'system.admin.inc',
+  );
+
+  return $items;
+}

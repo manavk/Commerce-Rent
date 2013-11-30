@@ -1,13 +1,12 @@
 name = Commerce Rent
-description = Commerce Rent module which provides the rent item to the end users.
-core = 7.x
+description = Define features and functions common to the Commerce Rent module. Must be enable 
 package = Commerce Rent
-version = 7.x-1.0
+core = 7.x
 
-files[] = commerce_rent.module
-files[] = include/commerce_rent.inc
-files[] = include/commerce_rent_config.inc
-files[] = include/commerce_rent_manage.inc
-files[] = include/commerce_rent_update.inc
-files[] = include/commerce_rent_button.inc
+dependencies[] = commerce
+dependencies[] = system
+dependencies[] = entity
+dependencies[] = rules
 
+; Central Entity Controller.
+files[] = includes/commerce_rent.controller.inc

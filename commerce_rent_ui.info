@@ -1,0 +1,7 @@
+name = Commerce Rent UI
+description = Define features and functions common to the Commerce Rent module. Must be enable 
+package = Commerce Rent
+core = 7.x
+
+dependencies[] = commerce_rent
+
